@@ -9,8 +9,11 @@ from einops import rearrange
 from IPython.display import display
 import matplotlib.pyplot as plt
 
+device = "cuda" if torch.cuda.is_available() else "cpu"
+torch.set_default_device(device)
+pin_memory=True
 
-def obtenirDescReseauNeurones(image):
+def obtenirDescReseauNeurones(image): 
     color_converted = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
     image = Image.fromarray(color_converted)
     model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)   # le modèle est chargé avec des poids pré-entrainés sur ImageNet
@@ -29,6 +32,7 @@ def obtenirDescReseauNeurones(image):
 
     input_tensor = preprocess(image)         # 3 x 224 x 224
     input_batch = input_tensor.unsqueeze(0)  # Ajout d'une dimension de batch : 1 x 3 x 224 x 224
+    input_batch = input_batch.to(device)
 
 
 
@@ -41,6 +45,7 @@ def obtenirDescReseauNeurones(image):
     # Cela permet de réduire la consommation de mémoire graphique.
 
     output = rearrange(output, 'b d h w -> (b d h w)')  # 512
+    output = output.to("cpu")
 
     # Visualisation
     # plt.plot(output)

@@ -22,15 +22,22 @@ def obtenirDescHistogrammeCouleur(image):
         Barray = np.append(Barray, pixel[2])
 
     # conversion 256 -> 32 niveaux et création des histogrammes
-    histoR = np.histogram(Rarray, 32, (0.0, 256.0))
-    histoG = np.histogram(Garray, 32, (0.0, 256.0))
-    histoB = np.histogram(Barray, 32, (0.0, 256.0))
+    histoR = np.histogram(Rarray, 8, (0.0, 256.0))
+    histoG = np.histogram(Garray, 8, (0.0, 256.0))
+    histoB = np.histogram(Barray, 8, (0.0, 256.0))
 
     # concaténation des 3 quantifications en un seul vecteur de dimension D
-    histogramme = np.append(histoR[0], [histoG[0], histoB[0]])
+    histogramme = np.array([])
+    for index in range(len(histoR[0])):
+        histogramme = np.append(histogramme, histoR[0][index])
+        histogramme = np.append(histogramme, histoG[0][index])
+        histogramme = np.append(histogramme, histoB[0][index])
+        
 
-    plt.plot(histogramme)
-    plt.title(f"Descripteur d'une image à partir d'un histogramme de couleur")
-    plt.show()
+    #histogramme = np.append(histoR[0], [histoG[0], histoB[0]])
+
+    # plt.plot(histogramme)
+    # plt.title(f"Descripteur d'une image à partir d'un histogramme de couleur")
+    # plt.show()
 
     return(histogramme)
